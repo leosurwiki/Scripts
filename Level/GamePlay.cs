@@ -8,7 +8,13 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Text;
 using System.ComponentModel;
+using Assets;
+using System.Xml;
+
 
 public class GamePlay : MonoBehaviour
 {
@@ -38,16 +44,36 @@ public class GamePlay : MonoBehaviour
 
     void Awake()
     {
+        rec = new XMLGameRecord();
+        rec.GameTag = "abc";
         instance = this;
     }
+
+    private XMLGameRecord rec;
     void Start()
     {
+        StartCoroutine(hook());
         StartCoroutine(SpawnWaves());
-
         publicEnemies = this.enemies;
-
     }
-
+    // Timer
+    private double LastTime = 0.0;
+    IEnumerator hook()
+    {        
+        int i = 0;
+        while (true)
+        {
+            i++;
+            yield return new WaitForSeconds(5.0f);
+            XMLFrame fr = new XMLFrame();
+            fr.TimePoint = i;
+            foreach (Enemy e in activeEnemies)
+                fr.EnemyDis.Add(e.distance);
+            rec.Frames.Add(fr);
+            if (i == 5)
+                XmlSerializer.SaveToXml(rec.GameTag + ".xml", rec);
+        }
+    }
     IEnumerator SpawnWaves()
     {
         LevelData levelData = GameData.instance.GetCurrentLevel();

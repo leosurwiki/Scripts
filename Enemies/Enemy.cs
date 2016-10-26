@@ -8,7 +8,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Xml.Serialization;
+using System.IO;
+using System.Xml;
+[XmlRootAttribute("Enemy")]
 public class Enemy : MonoBehaviour
 {
     public MonsterData.Level baseEnemy;
@@ -73,6 +76,7 @@ public class Enemy : MonoBehaviour
     //path traversal
     public Transform[] wayPoints;
     public int nextPointIndex = 1;
+    [XmlAttribute("Distance")]
     public float distance;
 
     public HealthBar healthBar;
