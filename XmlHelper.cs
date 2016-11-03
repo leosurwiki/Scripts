@@ -47,10 +47,6 @@ namespace Assets
         {
             Frames = new List<XMLFrame>();
         }
-        ~XMLGameRecord()
-        {
-            XmlSerializer.SaveToXml(GameTag + ".xml", this);
-        }
     }
     [XmlRootAttribute("Frame")]
     public class XMLFrame
@@ -61,12 +57,19 @@ namespace Assets
             get;
             set;
         }
+        [XmlAttribute("Money")]
+        public int Money
+        {
+            get;
+            set;
+        }
         [XmlArrayAttribute("EnemyDis")]
         public List<float> EnemyDis
         {
             get;
             set;
         }
+
         public XMLFrame()
         {
             EnemyDis = new List<float>();

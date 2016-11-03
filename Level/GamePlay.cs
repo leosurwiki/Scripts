@@ -14,6 +14,7 @@ using System.Text;
 using System.ComponentModel;
 using Assets;
 using System.Xml;
+using System.Security.Cryptography;
 
 
 public class GamePlay : MonoBehaviour
@@ -46,6 +47,9 @@ public class GamePlay : MonoBehaviour
     {
         rec = new XMLGameRecord();
         rec.GameTag = "abc";
+        System.DateTime dt = System.DateTime.Now;
+        string dt24 = dt.ToString("yyyy_MM_dd_HH_mm_ss");
+        rec.GameTag += ' ' + dt24;
         instance = this;
     }
 
@@ -63,15 +67,14 @@ public class GamePlay : MonoBehaviour
         int i = 0;
         while (true)
         {
-            i++;
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(2.0f);
             XMLFrame fr = new XMLFrame();
+            i += 1;
             fr.TimePoint = i;
+            fr.Money = Currency.instance.coins;
             foreach (Enemy e in activeEnemies)
                 fr.EnemyDis.Add(e.distance);
             rec.Frames.Add(fr);
-            if (i == 5)
-                XmlSerializer.SaveToXml(rec.GameTag + ".xml", rec);
         }
     }
     IEnumerator SpawnWaves()
@@ -94,6 +97,7 @@ public class GamePlay : MonoBehaviour
 
         for (int waveNo = 0; waveNo < noWaves; waveNo++)
         {
+            Debug.Log(waveNo);
             waveData = levelData.GetWave(waveNo);
             monstersNo = waveData.GetMonstersNo();
 
@@ -109,9 +113,7 @@ public class GamePlay : MonoBehaviour
             }
             yield return levelWaitTime;
         }
-
         finishedSpawningEnemies = true;
-
         yield return null;
     }
 
@@ -208,7 +210,11 @@ public class GamePlay : MonoBehaviour
         activeEnemies.Remove (enemy);
 
         if (finishedSpawningEnemies)
+        {
+            if (activeEnemies.Count == 0)
+                XmlSerializer.SaveToXml(rec.GameTag + ".xml", rec);
             EndLevel();
+        }
     }
 
     public void RemoveEnemy(Enemy enemy)
@@ -220,7 +226,6 @@ public class GamePlay : MonoBehaviour
     {
         activeEnemies.Clear();
         activeTowers.Clear();
-
         UIManager.instance.ShowEndOfLevel();
     }
 

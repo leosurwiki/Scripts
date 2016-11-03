@@ -19,7 +19,7 @@ public class Shield : EnemyAbility {
 
 	protected override void InitializeAbility()
 	{
-		cooldown = enemy.baseEnemy.GetSpecialAbilityFloat("cooldown"); ;
+        cooldown = enemy.baseEnemy.GetSpecialAbilityFloat("cooldown"); ;
 		if (cooldown <= 0)
 		{
 			cooldown = 10f;

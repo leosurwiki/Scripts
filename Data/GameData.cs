@@ -142,9 +142,18 @@ public class GameData : MonoBehaviour
     public MonsterData.Level GetMonster(int detailedIdx)
     {
         int monsterIdx = detailedIdx/3;
-        MonsterData monster = monstersList[monsterIdx];
-        if (monster != null){
-            return monster.GetLevel(detailedIdx%3);
+        try
+        {
+            MonsterData monster = monstersList[monsterIdx];
+            if (monster != null)
+            {
+                return monster.GetLevel(detailedIdx % 3);
+            }
+        }
+        catch
+        {
+            Debug.Log(monsterIdx);
+            Debug.Log(monstersList.Count);
         }
         return null;
     }
